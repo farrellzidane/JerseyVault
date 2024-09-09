@@ -28,8 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "farrell-zidane31-jerseyvault.pbp.cs.ui.ac.id"
-                ]
+    "farrell-zidane31-jerseyvault.pbp.cs.ui.ac.id"]
 
 # Application definition
 
