@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-d2yy1a+dd$e2p3--zi*8u#=n9+18@(3$f7sp9_8)83w&trt45i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "farrell-zidane31-jerseyvault1.pbp.cs.ui.ac.id"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "farrell-zidane31-jerseyvault.pbp.cs.ui.ac.id"]
 
 # Application definition
 
@@ -54,7 +54,7 @@ ROOT_URLCONF = 'JerseyVault.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'], # Tambahkan konten baris ini
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,3 +121,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_TRUSTED_ORIGINS = ["http://localhost","http://127.0.0.1","http://farrell-zidane31-jerseyvault.pbp.cs.ui.ac.id", "https://farrell-zidane31-jerseyvault.pbp.cs.ui.ac.id"]
