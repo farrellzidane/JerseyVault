@@ -48,7 +48,7 @@ LINK PWS : https://farrell-zidane31-jerseyvault1.pbp.cs.ui.ac.id/
     python manage.py startapp main
     ```
 
-10. Menambahkan nama aplikasi ke ```INSTALLED_APPS``` pada file ```settings.py``` di direktori ```gudanggaram``` 
+10. Menambahkan nama aplikasi ke ```INSTALLED_APPS``` pada file ```settings.py``` di direktori ```JerseyVault``` 
 
 11. Me-_routing_ url pada file ```urls.py``` di direktori ```JerseyVault``` sehingga isi file ```urls.py``` menjadi:
     ```python
