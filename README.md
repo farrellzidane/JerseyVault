@@ -5,6 +5,7 @@ Sebuah proyek Django sederhana sebagai Tugas Mata Kuliah Pemrograman Berbasis Pl
 LINK PWS : https://farrell-zidane31-jerseyvault1.pbp.cs.ui.ac.id/
  
 
+## TUGAS 1
 ### 1. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
 
 1. membuat _repository_ bernama ```Jerseyvault```
@@ -169,3 +170,27 @@ Git adalah salah satu alat terpenting dalam pengembangan perangkat lunak saat in
 
 ### 5. Mengapa model pada Django disebut sebagai ORM?
 Model pada Django disebut ORM (Object-Relational Mapping) karena memungkinkan pengembang bekerja dengan database menggunakan objek Python, tanpa harus menulis SQL. Django memetakan objek Python ke tabel di database secara otomatis. ORM menyederhanakan operasi database seperti `SELECT`, `INSERT`, dan `UPDATE`, serta menyediakan keamanan dari SQL injection. Dengan ORM, pengelolaan data menjadi lebih mudah, abstraksi SQL terjamin, dan mendukung berbagai jenis database tanpa mengubah kode.
+
+## TUGAS 2
+
+### 1. Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
+Data delivery merupakan bagian yang penting karena menjadi penghubung/jembatan bagi aliran informasi antara hardware, device, dan user. Data delivery yang efisien memastikan bahwa informasi yang dibutuhkan selalu tersedia secara real-time
+
+### 2. Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
+JSON lebih baik dibanding XML karena JSON memiliki - struktur yang lebih sederhana dibandingkan dengan XML karena menggunakan struktur berbasis objek dengan key-values. 
+    - JSON lebih mudah untuk diparsing langsung oleh browser
+    - Sebagian besar REST API modern menggunakan JSON sebagai format standar untuk pertukaran data
+    - JSON mendukung validasi data dengan format yang lebih fleksibel melalui JSON Schema. Ini lebih ringan dan lebih mudah dipahami oleh developer.
+
+### 3.  Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
+ Fungsi is_valid() digunakan untuk
+- Memeriksa Validasi Form untuk semua aturan validasi yang diterapkan pada form, baik itu validasi bawaan dari Django (seperti format email yang benar, panjang minimum/maximum, dll.) maupun validasi kustom yang dibuat oleh developer
+
+- Membersihkan Data yang Valid : membersihkan data input dan menyimpannya dalam properti cleaned_data, yang kemudian dapat digunakan untuk memproses data lebih lanjut, seperti menyimpannya ke database
+
+is_valid() berfungsi sebagai alat pengaman untuk memastikan bahwa semua input dari pengguna sudah sesuai dengan aturan yang ditentukan, sehingga aplikasi dapat berjalan dengan lancar dan aman.
+
+### 4.  Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?
+csrf_token diperlukan saat membuat form di Django untuk melindungi aplikasi dari serangan CSRF (Cross-Site Request Forgery). CSRF adalah jenis serangan di mana penyerang mencoba mengelabui pengguna yang sudah terotentikasi untuk melakukan tindakan yang tidak diinginkan di aplikasi web tanpa sepengetahuan mereka. 
+
+tanpa csrf_token ini penyerang dapat menyalahgunakan form Django seperti mengubah-ubah data pengguna, penghapusan data sensitif, dan lainnya 

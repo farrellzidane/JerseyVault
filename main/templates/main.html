@@ -42,7 +42,7 @@
 
         #hero {
             color: rgb(0, 0, 0);
-            height: 80vh;
+            height: 20vh;
             display: flex;
             justify-content: center;
             align-items: top;
@@ -119,6 +119,54 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
+        table {
+    width: 75%;
+    margin: 40px auto; /* Center the table */
+    text-align: left;
+    font-size: 18px;
+    border-collapse: collapse; /* Uncomment if needed */
+}
+
+table, th, td {
+    border: 2px solid #ba9c60;
+}
+
+th, td {
+    padding: 15px;
+}
+
+th {
+    background-color: #ba9c60;
+    color: white;
+}
+
+td {
+    background-color: #fff;
+}
+
+/* Center Align Button */
+.btn-add-new-jersey {
+    display: block;
+    margin: 20px auto; /* Center the button */
+    padding: 12px 30px;
+    background-image: linear-gradient(135deg, #ff9d00 0%, #ff6200 100%);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-add-new-jersey:hover {
+    background-image: linear-gradient(135deg, #ff6200 0%, #ff9d00 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+        
         footer {
             background: linear-gradient(180deg, #ba9c60, #8d6e46);
             color: white;
@@ -196,11 +244,37 @@
         </div>
     </section>
 
-    <section id="about" class="about-section">
-        <h2>About JerseyVault</h2>
-        <p>At JerseyVault, we specialize in vintage football jerseys from all eras. Our goal is to provide football enthusiasts with authentic, high-quality jerseys that bring back the excitement of the game’s greatest moments.</p>
-    </section>
-
+    {% if not mood_entries %}
+    <p>Belum ada data mood pada mental health tracker.</p>
+    {% else %}
+    <table>
+      <tr>
+        <th>Jersey name</th>
+        <th>Time</th>
+        <th>Description</th>
+        <th>Price</th>
+      </tr>
+    
+      {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
+      {% endcomment %} 
+      {% for mood_entry in mood_entries %}
+      <tr>
+        <td>{{mood_entry.jersey_name}}</td>
+        <td>{{mood_entry.time}}</td>
+        <td>{{mood_entry.description}}</td>
+        <td>Rp.{{mood_entry.price}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+    
+    <br />
+    
+    <a href="{% url 'main:create_mood_entry' %}">
+        <button class="btn-add-new-jersey">Add New Jersey</button>
+    </a>
+    
+    
     <footer>
         <div class="footer-left">
             <p>Nama: {{ nama }}</p>
@@ -217,35 +291,5 @@
 </body>
 
 </html>
-
-{% if not mood_entries %}
-<p>Belum ada data mood pada mental health tracker.</p>
-{% else %}
-<table>
-  <tr>
-    <th>Mood Name</th>
-    <th>Time</th>
-    <th>Feeling</th>
-    <th>Mood Intensity</th>
-  </tr>
-
-  {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
-  {% endcomment %} 
-  {% for mood_entry in mood_entries %}
-  <tr>
-    <td>{{mood_entry.mood}}</td>
-    <td>{{mood_entry.time}}</td>
-    <td>{{mood_entry.feelings}}</td>
-    <td>{{mood_entry.mood_intensity}}</td>
-  </tr>
-  {% endfor %}
-</table>
-{% endif %}
-
-<br />
-
-<a href="{% url 'main:create_mood_entry' %}">
-  <button>Add New Mood Entry</button>
-</a>
 
 {% endblock content %}
