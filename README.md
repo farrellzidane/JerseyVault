@@ -307,4 +307,53 @@ class ProductEntryForm(ModelForm):
 ]
 ```
 
-9. 
+9. Buat berkas HTML baru dengan nama ```create_product_entry.html``` pada direktori main/templates dan isi dengan kode berikut.
+```html
+    {% extends 'base.html' %} 
+{% block content %}
+<h1>Add New Jersey</h1>
+
+<form method="POST">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+    <tr>
+      <td></td>
+      <td>
+        <input type="submit" value="Add Jersey Entry" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+{% endblock %}
+```
+10. Tambahkan kode ini ke dalam ```main.html``` untuk menampilkan data jersey dalam bentuk tabel yang akan redirect ke halaman form.
+```html
+...
+{% if not product_entries %}
+    <p>Belum ada data jersey pada JerseyVault.</p>
+{% else %}
+    <table>
+      <tr>
+        <th>Jersey name</th>
+        <th>Time</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Quantity</th>
+
+      </tr>
+      {% for product_entry in product_entries %}
+      <tr>
+        <td>{{product_entry.jersey_name}}</td>
+        <td>{{product_entry.time}}</td>
+        <td>{{product_entry.description}}</td>
+        <td>Rp.{{product_entry.price}}</td>
+        <td>{{product_entry.quantity}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+{% endif %}
+```
+
+
