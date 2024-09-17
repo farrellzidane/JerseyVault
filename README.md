@@ -300,6 +300,11 @@ class ProductEntryForm(ModelForm):
     return render(request, "main.html", context)
 ```
 
-8. 
+8. Tambahkan import ```create_product_entry``` dan path URL ke dalam variabel ```urlpatterns``` pada ```urls.py``` di main untuk mengakses fungsi yang sudah di-import pada poin sebelumnya.
+```urlpatterns = [
+   ...
+    path('create_product_entry', create_product_entry, name='create_product_entry'),
+]
+```
 
-
+9. 
