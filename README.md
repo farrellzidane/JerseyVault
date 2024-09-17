@@ -177,13 +177,14 @@ Model pada Django disebut ORM (Object-Relational Mapping) karena memungkinkan pe
 Data delivery merupakan bagian yang penting karena menjadi penghubung/jembatan bagi aliran informasi antara hardware, device, dan user. Data delivery yang efisien memastikan bahwa informasi yang dibutuhkan selalu tersedia secara real-time
 
 ### 2. Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
-JSON lebih baik dibanding XML karena JSON memiliki - struktur yang lebih sederhana dibandingkan dengan XML karena menggunakan struktur berbasis objek dengan key-values. 
+JSON lebih baik dibanding XML karena JSON memiliki 
+    - struktur yang lebih sederhana dibandingkan dengan XML karena menggunakan struktur berbasis objek dengan key-values. 
     - JSON lebih mudah untuk diparsing langsung oleh browser
     - Sebagian besar REST API modern menggunakan JSON sebagai format standar untuk pertukaran data
     - JSON mendukung validasi data dengan format yang lebih fleksibel melalui JSON Schema. Ini lebih ringan dan lebih mudah dipahami oleh developer.
 
 ### 3.  Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
- Fungsi is_valid() digunakan untuk
+ Fungsi `is_valid()` digunakan untuk
 - Memeriksa Validasi Form untuk semua aturan validasi yang diterapkan pada form, baik itu validasi bawaan dari Django (seperti format email yang benar, panjang minimum/maximum, dll.) maupun validasi kustom yang dibuat oleh developer
 
 - Membersihkan Data yang Valid : membersihkan data input dan menyimpannya dalam properti cleaned_data, yang kemudian dapat digunakan untuk memproses data lebih lanjut, seperti menyimpannya ke database
@@ -191,6 +192,112 @@ JSON lebih baik dibanding XML karena JSON memiliki - struktur yang lebih sederha
 is_valid() berfungsi sebagai alat pengaman untuk memastikan bahwa semua input dari pengguna sudah sesuai dengan aturan yang ditentukan, sehingga aplikasi dapat berjalan dengan lancar dan aman.
 
 ### 4.  Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?
-csrf_token diperlukan saat membuat form di Django untuk melindungi aplikasi dari serangan CSRF (Cross-Site Request Forgery). CSRF adalah jenis serangan di mana penyerang mencoba mengelabui pengguna yang sudah terotentikasi untuk melakukan tindakan yang tidak diinginkan di aplikasi web tanpa sepengetahuan mereka. 
+csrf_token diperlukan saat membuat form di Django untuk melindungi aplikasi dari serangan CSRF (Cross-Site Request Forgery). CSRF adalah jenis serangan di mana penyerang mencoba mengelabui pengguna yang sudah terotentikasi untuk melakukan tindakan yang tidak diinginkan di aplikasi web tanpa sepengetahuan mereka. Tanpa csrf_token ini penyerang dapat menyalahgunakan form Django seperti mengubah-ubah data pengguna, penghapusan data sensitif, dan lainnya 
 
-tanpa csrf_token ini penyerang dapat menyalahgunakan form Django seperti mengubah-ubah data pengguna, penghapusan data sensitif, dan lainnya 
+### 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+
+1. Membuat folder ```templates``` pada root folder dan buat ```base.html``` dengan isi
+    ```html
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block meta %} {% endblock meta %}
+  </head>
+
+  <body>
+    {% block content %} {% endblock content %}
+  </body>
+</html>
+    ```
+
+2. membuka ```settings.py``` dan masukkan kode ini untuk mendeteksi berkas base.html sebagai berkas template
+
+```
+...
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'], # Tambahkan konten baris ini
+        'APP_DIRS': True,
+        ...
+    }
+]
+...
+```
+3. Ubah kode ```main.html``` dengan menambahkan untuk untuk mewarisi template lain (`base.html`) dan mengganti isi blok `content` dengan konten spesifik halaman.:
+```html
+ {% extends 'base.html' %}
+ {% block content %}
+ ...
+ {% endblock content %}
+ ```
+
+ 4. Menambahkan kode berikut pada ```models.py``` :
+ ```python
+ import uuid
+from django.db import models
+
+class Product(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  # tambahkan baris ini
+    jersey_name = models.CharField(max_length=255)
+    time = models.DateField(auto_now_add=True)
+    description = models.TextField()
+    price = models.IntegerField()
+    quantity = models.IntegerField()
+
+
+    @property
+    def is_mood_strong(self):
+        return self.price > 5
+```
+
+dan lakukan migrasi model
+```
+    python manage.py makemigrations
+    python manage.py migrate
+```
+
+5. Membuat file ```forms.py``` untuk membuat struktur form yang dapat menerima data Jersey Baru dengan memasukkan kode berikut:
+``` python
+ from django.forms import ModelForm
+from main.models import Product
+
+class ProductEntryForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = ["jersey_name", "description", "price", "quantity"]
+```
+
+6. Menambahkan import dan fungsi baru pada file ```views.py```  untuk menghasilkan form yang dapat menambahkan data Jersey Entry secara otomatis ketika data di-submit dari form.
+```python
+    from django.shortcuts import render, redirect   # Tambahkan import redirect di baris ini
+    from main.forms import ProductEntryForm
+    from main.models import Product
+
+    def create_product_entry(request):
+    form = ProductEntryForm(request.POST or None)
+
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('main:show_main')
+
+    context = {'form': form}
+    return render(request, "create_product_entry.html", context)
+```
+
+7. Mengubah fungsi `show_main`dengan menambahkan kode beriku tuntuk mengambil seluruh objek product yang tersimpan pada database.
+```python
+    def show_main(request):
+    product_entries = Product.objects.all()
+    context = {
+        ...
+        'product_entries': product_entries
+    }
+
+    return render(request, "main.html", context)
+```
+
+8. 

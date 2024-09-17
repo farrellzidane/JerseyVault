@@ -218,7 +218,7 @@ td {
     </section>
 
     <section id="shop" class="shop-section">
-        <h2>Featured Jerseys</h2>
+        <!-- <h2>Featured Jerseys</h2>
         <div class="jersey-item">
             <h3>{{ item_name1 }}</h3>
             <h5>{{item_description1}}</h5>
@@ -241,39 +241,39 @@ td {
             <p>Price: IDR {{ price3 }}</p>
             <p>Rating: {{ item_rating3 }} </p>
             <button class="btn-add-to-cart">Add to Cart</button>
-        </div>
+        </div> -->
     </section>
 
-    {% if not mood_entries %}
-    <p>Belum ada data mood pada mental health tracker.</p>
-    {% else %}
+    {% if not product_entries %}
+    <p>Belum ada data jersey pada JerseyVault.</p>
+{% else %}
     <table>
       <tr>
         <th>Jersey name</th>
         <th>Time</th>
         <th>Description</th>
         <th>Price</th>
+        <th>Quantity</th>
+
       </tr>
-    
-      {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
-      {% endcomment %} 
-      {% for mood_entry in mood_entries %}
+      {% for product_entry in product_entries %}
       <tr>
-        <td>{{mood_entry.jersey_name}}</td>
-        <td>{{mood_entry.time}}</td>
-        <td>{{mood_entry.description}}</td>
-        <td>Rp.{{mood_entry.price}}</td>
+        <td>{{product_entry.jersey_name}}</td>
+        <td>{{product_entry.time}}</td>
+        <td>{{product_entry.description}}</td>
+        <td>Rp.{{product_entry.price}}</td>
+        <td>{{product_entry.quantity}}</td>
       </tr>
       {% endfor %}
     </table>
-    {% endif %}
+{% endif %}
+
     
-    <br />
-    
-    <a href="{% url 'main:create_mood_entry' %}">
+    <a href="{% url 'main:create_product_entry' %}">
         <button class="btn-add-new-jersey">Add New Jersey</button>
     </a>
     
+    <br />
     
     <footer>
         <div class="footer-left">
