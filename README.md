@@ -355,5 +355,4 @@ class ProductEntryForm(ModelForm):
     </table>
 {% endif %}
 ```
-
-
+Screenshot POSTMAN : https://docs.google.com/document/d/16JmIt-wZpMgFIVi2bI5hJfzVgQuXsNG7B0p_BoDDfcE/edit?usp=sharing
