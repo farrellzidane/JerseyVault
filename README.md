@@ -171,7 +171,7 @@ Git adalah salah satu alat terpenting dalam pengembangan perangkat lunak saat in
 ### 5. Mengapa model pada Django disebut sebagai ORM?
 Model pada Django disebut ORM (Object-Relational Mapping) karena memungkinkan pengembang bekerja dengan database menggunakan objek Python, tanpa harus menulis SQL. Django memetakan objek Python ke tabel di database secara otomatis. ORM menyederhanakan operasi database seperti `SELECT`, `INSERT`, dan `UPDATE`, serta menyediakan keamanan dari SQL injection. Dengan ORM, pengelolaan data menjadi lebih mudah, abstraksi SQL terjamin, dan mendukung berbagai jenis database tanpa mengubah kode.
 
-## TUGAS 2
+## TUGAS 3
 
 ### 1. Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
 Data delivery merupakan bagian yang penting karena menjadi penghubung/jembatan bagi aliran informasi antara hardware, device, dan user. Data delivery yang efisien memastikan bahwa informasi yang dibutuhkan selalu tersedia secara real-time
@@ -262,7 +262,7 @@ dan lakukan migrasi model
 
 5. Membuat file ```forms.py``` untuk membuat struktur form yang dapat menerima data Jersey Baru dengan memasukkan kode berikut:
 ``` python
- from django.forms import ModelForm
+from django.forms import ModelForm
 from main.models import Product
 
 class ProductEntryForm(ModelForm):
@@ -301,7 +301,8 @@ class ProductEntryForm(ModelForm):
 ```
 
 8. Tambahkan import ```create_product_entry``` dan path URL ke dalam variabel ```urlpatterns``` pada ```urls.py``` di main untuk mengakses fungsi yang sudah di-import pada poin sebelumnya.
-```urlpatterns = [
+```python
+urlpatterns = [
    ...
     path('create_product_entry', create_product_entry, name='create_product_entry'),
 ]
@@ -356,3 +357,84 @@ class ProductEntryForm(ModelForm):
 {% endif %}
 ```
 Screenshot POSTMAN : https://docs.google.com/document/d/16JmIt-wZpMgFIVi2bI5hJfzVgQuXsNG7B0p_BoDDfcE/edit?usp=sharing
+
+
+## TUGAS 4
+
+### 1. Apa perbedaan antara HttpResponseRedirect() dan redirect()
+```HttpResponseRedirect()``` dan ```redirect()``` keduanya digunakan untuk mengarahkan user ke URL lain dalam Django, tetapi ada beberapa perbedaan antara keduanya. 
+
+- ```HttpResponseRedirect()``` digunakan untuk mengembalikan respons HTTP yang menunjukkan bahwa browser harus diarahkan (redirect) ke URL yang ditentukan.  ```HttpResponseRedirect()``` memerlukan satu parameter yaitu URL tujuan. Biasanya digunakan  ketika ingin melakukan pengalihan manual dan secara eksplisit menulis URL sebagai string.
+
+- ```redirect()``` merupakan fungsi utilitas Django yang lebih fleksibel untuk melakukan pengalihan. ```redirect()```lebih disukai karena lebih fleksibel. Ini memungkinkan pengalihan berdasarkan URL, nama view, atau objek, membuat kode lebih bersih dan mudah dipahami.
+
+### 2. Jelaskan cara kerja penghubungan model Product dengan User!
+
+untuk menghubungkan model Product dengan User di Django dilakukan dengan menggunakan *ForeignKey* untuk mengaitkan setiap produk dengan pengguna tertentu. Pertama, impor model `User` dari `django.contrib.auth.models`. Kemudian, tambahkan ForeignKey pada model Product yang menunjuk ke User. Dengan begitu, setiap produk dapat dikaitkan dengan pengguna yang menambahkannya. Atribut `on_delete=models.CASCADE` digunakan untuk memastikan bahwa jika pengguna dihapus, semua produk yang terkait dengan pengguna tersebut juga akan dihapus. Saat membuat atau menyimpan produk, kaitkan produk dengan pengguna yang sedang login melalui request.user. Berikut ini adalah contoh kode yang diperlukan:
+
+- pada `models.py`
+```python    
+    from django.db import models
+    from django.contrib.auth.models import User
+
+    class Product(models.Model):
+        ...
+        user = models.ForeignKey(User, on_delete=models.CASCADE)  # Hubungan dengan User
+```
+
+- pada `views.py` dan tambahkan kode pada function `show_main` :
+```python
+    def show_main(request):
+    mood_entries = MoodEntry.objects.filter(user=request.user)
+
+    context = {
+         'name': request.user.username,
+         ...
+    }
+...
+```
+
+dan function `create_product_entry` :
+```python
+    def create_product_entry(request):
+        form = ProductEntryForm(request.POST or None)
+
+        if form.is_valid() and request.method == "POST":
+            product_entry = form.save(commit=False)
+            product_entry.user = request.user
+            product_entry.save()
+            return redirect('main:show_main')
+
+        context = {'form': form}
+        return render(request, "create_product_entry.html", context)
+```
+### 3. Apa perbedaan antara authentication dan authorization, apakah yang dilakukan saat pengguna login? Jelaskan bagaimana Django mengimplementasikan kedua konsep tersebut.
+
+**Authentication** adalah proses memverifikasi identitas pengguna (misalnya melalui login), sementara **Authorization** menentukan hak akses pengguna setelah mereka terautentikasi. Saat pengguna login, Django memverifikasi kredensial menggunakan `authenticate()` dan memulai sesi dengan `login()`. Setelah itu, otorisasi memastikan pengguna hanya bisa mengakses fitur sesuai izin mereka, yang diatur dengan sistem permissions dan groups.
+
+### 4. Bagaimana Django mengingat pengguna yang telah login? Jelaskan kegunaan lain dari cookies dan apakah semua cookies aman digunakan?
+Django mengingat pengguna yang telah login dengan **session cookies**. Saat pengguna berhasil login, Django membuat sesi dan menyimpan informasi pengguna dalam bentuk **cookie** di browser pengguna. Setiap kali user mengirimkan permintaan, cookie ini dikirim kembali ke server, sehingga Django dapat mengidentifikasi pengguna yang login dan menjaga sesi tetap aktif.
+
+1. Kegunaan lain dari cookies :
+- Melacak preferensi pengguna: Seperti pengaturan bahasa, tema, atau barang yang ditambahkan ke keranjang belanja.
+- Menyimpan data sementara: Seperti form yang diisi sebagian atau aktivitas browsing.
+- Mengumpulkan data analitik: Seperti mengukur kunjungan atau perilaku pengguna di situs web.
+
+2. Keamanan cookies :
+Umumnya cookie tidak berbahaya bagi aktivitas online. Kemungkinannya sangat kecil bahwa malware dapat masuk ke komputer atau data-data rahasia hilang melalui cookie.
+
+### 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+
+### Proses Implementasi Login Page
+
+1. Membuat app baru bernama ```login``` serta laman-laman yang dimilikinya seperti register, login dan logout (walaupun logout tidak mempunyai tampilan hanya mengarahkan ke laman login lagi)
+
+2. Melakukan **routing url** seperti biasa untuk mengatur alur tampilan laman
+
+3. Menerapkan **decorator keharusan login** terutama pada laman utama sehingga perlu login untuk mengaksesnya
+
+4. Mengimplementasikan **cookie** sehingga user masih berstatus login ketika menjelajahi laman utama
+
+5. Menambahkan field baru pada Model utama yaitu ```user``` yang akan diasosiasikan dengan barang-barang khusus untuk user tersebut, sehingga user yang berbeda akan memiliki akses ke barang yang berbeda
+
+6. Melakukan **migrasi database** untuk mensinkronkan database pada keseluruhan proyek

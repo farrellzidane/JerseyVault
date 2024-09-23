@@ -1,3 +1,5 @@
+import os
+
 """
 Django settings for JerseyVault project.
 
@@ -23,7 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-d2yy1a+dd$e2p3--zi*8u#=n9+18@(3$f7sp9_8)83w&trt45i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+PRODUCTION = os.getenv("PRODUCTION", False)
+DEBUG = not PRODUCTION
 #
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "farrell-zidane31-jerseyvault.pbp.cs.ui.ac.id", "http://farrell.zidane31-jerseyvault.pbp.cs.ui.ac.id" ]
 
