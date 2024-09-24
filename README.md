@@ -427,14 +427,53 @@ Umumnya cookie tidak berbahaya bagi aktivitas online. Kemungkinannya sangat keci
 
 ### Proses Implementasi Login Page
 
-1. Membuat app baru bernama ```login``` serta laman-laman yang dimilikinya seperti register, login dan logout (walaupun logout tidak mempunyai tampilan hanya mengarahkan ke laman login lagi)
+1. **Membuat Fungsi Registrasi**:
+- Modifikasi `views.py` untuk membuat fungsi registrasi yang meng*import* formulir bawaan Django. Tambahkan fungsi `register` untuk menangani pendaftaran pengguna baru.
+- Buat file `register.html` sebagai template untuk tampilan halaman registrasi dan tambahkan path URL ke dalam `urlpatterns`.
 
-2. Melakukan **routing url** seperti biasa untuk mengatur alur tampilan laman
+2. **Implementasi Fungsi Login**:
+- Di `views.py`, import fungsi bawaan Django seperti `authenticate`, `login`, dan `AuthenticationForm`. Tambahkan fungsi `login_user` untuk menangani proses login.
+- Buat file `login.html` untuk tampilan halaman login dan atur URL path untuk akses halaman tersebut.
 
-3. Menerapkan **decorator keharusan login** terutama pada laman utama sehingga perlu login untuk mengaksesnya
+3. **Membuat Fungsi Logout**:
+- Di `views.py`, impor fungsi `logout` dan tambahkan fungsi `logout_user` untuk menangani proses logout.
+- Modifikasi file `main.html` dengan menambahkan hyperlink untuk logout dan tambahkan path URL untuk logout di `urlpatterns`.
 
-4. Mengimplementasikan **cookie** sehingga user masih berstatus login ketika menjelajahi laman utama
+4. **Restriksi Akses Halaman Utama**:
+- Import `login_required` untuk membatasi akses ke halaman utama. 
+- Gunakan decorator `@login_required(login_url='/login')` agar hanya pengguna yang sudah login yang dapat mengakses halaman tersebut.
 
-5. Menambahkan field baru pada Model utama yaitu ```user``` yang akan diasosiasikan dengan barang-barang khusus untuk user tersebut, sehingga user yang berbeda akan memiliki akses ke barang yang berbeda
+5. **Mengelola Cookies**:
+- Tambahkan import `HttpResponseRedirect`, `reverse`, dan `datetime` di` views.py`. 
+- Modifikasi fungsi `login_user` untuk membuat cookie `last_login` saat pengguna berhasil login.
+- Tambahkan informasi cookie `last_login` ke dalam konteks, sehingga dapat ditampilkan di halaman `main.html`. 
+- Modifikasi fungsi `logout_user` untuk menghapus cookie tersebut saat pengguna logout.
+- Tampilkan informasi cookie di `main.html`.
 
-6. Melakukan **migrasi database** untuk mensinkronkan database pada keseluruhan proyek
+6. **Menghubungkan Model Product dengan User**:
+
+- Di `models.py`, import model `User` dan tambahkan field user pada model `Product` dengan menggunakan kode dibawah ini
+```python
+    models.ForeignKey(User, on_delete=models.CASCADE)
+``` 
+Ini akan mengaitkan setiap produk dengan pengguna yang membuatnya.
+
+- Modifikasi fungsi `create_product_entry` di `views.py` agar menyimpan objek produk terkait dengan pengguna yang sedang login. Ubah query `product_entries` untuk menampilkan hanya produk yang terasosiasi dengan pengguna yang sedang login, serta tampilkan nama pengguna di konteks.
+
+7. **Melakukan Migrasi Database**:
+- Jalankan perintah `python manage .py makemigrations` dan `python manage.py migrate` untuk memperbarui skema database sesuai dengan perubahan yang dilakukan.
+
+8. **Pengaturan Konfigurasi Proyek**:
+- Buka berkas `settings.py`, `import os`, dan ubah variabel `DEBUG` menjadi kode berikut :
+
+```python
+    PRODUCTION = os.getenv("PRODUCTION", False)
+    DEBUG = not PRODUCTION 
+```
+untuk mengatur mode produksi.
+
+9. **Membuat Aplikasi Baru**:
+- Buat aplikasi baru bernama login yang akan mencakup halaman `registrasi`, `login`, dan `logout` (meskipun logout tidak memerlukan tampilan dan hanya mengarahkan kembali ke halaman login).
+
+10.**Routing URL**:
+- Atur routing URL untuk memastikan alur tampilan halaman berjalan dengan baik.
