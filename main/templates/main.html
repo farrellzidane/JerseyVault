@@ -1,301 +1,60 @@
 {% extends 'base.html' %}
+
 {% block content %}
+<!-- Padding top to prevent content from being hidden under the navbar -->
+<div class="pt-16"></div>
 
-<!DOCTYPE html>
-<html lang="en">
+<!-- Include Navbar -->
+{% include 'navbar.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JerseyVault - Vintage Football Jerseys</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> <!-- Google Fonts -->
+<!-- Hero Section -->
+<section id="hero" class="bg-gray-900 py-12 text-white">
+  <div class="hero-content text-center">
+    <h2 class="text-3xl font-bold mb-4">Collect historical jerseys and own a piece of football history</h2>
+    <p class="mb-6">Explore our exclusive collection of vintage football jerseys</p>
+    <a href="#shop" class="bg-yellow-400 text-white py-2 px-6 rounded-lg transition duration-300 hover:bg-yellow-600">Shop Now</a>
+  </div>
+</section>
 
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        header {
-            background: linear-gradient(0deg, #ba9c60, #8d6e46);
-            color: #fff;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .navbar ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .navbar ul li {
-            display: inline;
-            margin: 0 15px;
-        }
-
-        .navbar ul li a {
-            color: #fff;
-            text-decoration: none;
-        }
-
-        #hero {
-            color: rgb(0, 0, 0);
-            height: 20vh;
-            display: flex;
-            justify-content: center;
-            align-items: top;
-            text-align: center;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            background-color: #ff6200;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .shop-section {
-            padding: 40px;
-            text-align: center;
-        }
-
-        .jersey-item {
-            margin: 20px;
-            display: inline-block;
-            width: 200px;
-            padding: 20px;
-            border: 2px solid #ba9c60;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .jersey-item:hover {
-            transform: scale(1.05);
-        }
-
-        .btn-add-to-cart {
-            display: inline-block;
-            padding: 12px 30px;
-            background-image: linear-gradient(135deg, #ff9d00 0%, #ff6200 100%);
-            color: white;
-            font-weight: bold;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-add-to-cart:hover {
-            background-image: linear-gradient(135deg, #ff6200 0%, #ff9d00 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-shop-now {
-            display: inline-block;
-            padding: 15px 40px;
-            background-image: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%);
-            color: white;
-            font-weight: bold;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-
-        .btn-shop-now:hover {
-            background-image: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        table {
-    width: 75%;
-    margin: 40px auto; /* Center the table */
-    text-align: left;
-    font-size: 18px;
-    border-collapse: collapse; /* Uncomment if needed */
-}
-
-table, th, td {
-    border: 2px solid #ba9c60;
-}
-
-th, td {
-    padding: 15px;
-}
-
-th {
-    background-color: #ba9c60;
-    color: white;
-}
-
-td {
-    background-color: #fff;
-}
-
-/* Center Align Button */
-.btn-add-new-jersey {
-    display: block;
-    margin: 20px auto; /* Center the button */
-    padding: 12px 30px;
-    background-image: linear-gradient(135deg, #ff9d00 0%, #ff6200 100%);
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.btn-add-new-jersey:hover {
-    background-image: linear-gradient(135deg, #ff6200 0%, #ff9d00 100%);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-        
-        footer {
-            background: linear-gradient(180deg, #ba9c60, #8d6e46);
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .footer-left {
-            text-align: left;
-        }
-
-        .footer-right {
-            text-align: right;
-        }
-
-        .footer-right .social-links a {
-            color: white;
-            margin: 0 10px;
-            text-decoration: none;
-        }
-
-    </style>
-</head>
-
-<body>
-    <header>
-        <div class="navbar">
-            <h1>JerseyVault</h1>
-            <h5>Relive the Glory Days with Our Vintage Football Jerseys</h5>
-            <nav>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#shop">Shop</a></li>
-                    <li><a href="#about">About Us</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    <li><a href="#cart">Cart</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <section id="hero">
-        <div class="hero-content">
-            <p>Collect historical jerseys and own a piece of football history. Shop now!</p>
-            <a href="#shop" class="btn-shop-now">Shop Now</a>
-        </div>
-    </section>
-
-    <section id="shop" class="shop-section">
-        <!-- <h2>Featured Jerseys</h2>
-        <div class="jersey-item">
-            <h3>{{ item_name1 }}</h3>
-            <h5>{{item_description1}}</h5>
-            <p>Price: IDR {{ price1 }}</p>
-            <p>Rating: {{ item_rating1 }} </p>
-            <button class="btn-add-to-cart">Add to Cart</button>
-        </div>
-
-        <div class="jersey-item">
-            <h3>{{ item_name2 }}</h3>
-            <h5>{{item_description2}}</h5>
-            <p>Price: IDR {{ price2 }}</p>
-            <p>Rating: {{ item_rating2 }} </p>
-            <button class="btn-add-to-cart">Add to Cart</button>
-        </div>
-
-        <div class="jersey-item">
-            <h3>{{ item_name3 }}</h3>
-            <h5>{{item_description3}}</h5>
-            <p>Price: IDR {{ price3 }}</p>
-            <p>Rating: {{ item_rating3 }} </p>
-            <button class="btn-add-to-cart">Add to Cart</button>
-        </div> -->
-    </section>
-
+<!-- Shop Section -->
+<section id="shop" class="py-12 px-6 text-blackx100 max-w-7xl mx-auto rounded-lg ">
     {% if not product_entries %}
-    <p>Belum ada data jersey pada JerseyVault.</p>
-{% else %}
-    <table>
-      <tr>
-        <th>Jersey name</th>
-        <th>Time</th>
-        <th>Description</th>
-        <th>Price</th>
-        <th>Quantity</th>
-
-      </tr>
-      {% for product_entry in product_entries %}
-      <tr>
-        <td>{{product_entry.jersey_name}}</td>
-        <td>{{product_entry.time}}</td>
-        <td>{{product_entry.description}}</td>
-        <td>Rp.{{product_entry.price}}</td>
-        <td>{{product_entry.quantity}}</td>
-      </tr>
-      {% endfor %}
-    </table>
-{% endif %}
-
-    
-    <a href="{% url 'main:create_product_entry' %}">
-        <button class="btn-add-new-jersey">Add New Jersey</button>
-    </a>
-
-    <a href="{% url 'main:logout' %}">
-        <button>Logout</button>
-    </a>
-    
-    <br />
-
-    <h5>Sesi terakhir login: {{ last_login }}</h5>
-    
-    <footer>
-        <div class="footer-left">
-            <p>Nama: {{ nama }}</p>
-            <p>NPM: {{ npm }}</p>
-            <p>Kelas: {{ kelas }}</p>
-        </div>
-        <div class="footer-right">
-            <p>Contact Us:</p>
-            <div class="social-links">
-                <a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">Twitter</a>
+        <p class="text-center">Belum ada data jersey pada JerseyVault.</p>
+    {% else %}
+        <!-- Grid layout for displaying product cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for product in product_entries %}
+            <div>
+              <!-- Include card_product.html for each product -->
+              {% include 'card_product.html' with product=product %}
             </div>
+          {% endfor %}
         </div>
-    </footer>
-</body>
+    {% endif %}
+  </section>
 
-</html>
+<!-- Add New Jersey Button -->
+<div class="text-center my-8">
+  <a href="{% url 'main:create_product_entry' %}" class="bg-yellow-400 text-white py-2 px-6 rounded-lg transition duration-300 hover:bg-yellow-600">Add New Jersey</a>
+</div>
+
+<!-- Footer Section -->
+<footer class="bg-gray-900 py-10 text-white mt-12">
+  <div class="flex justify-between max-w-7xl mx-auto px-4">
+    <div class="footer-left">
+      <p>Nama: {{ nama }}</p>
+      <p>NPM: {{ npm }}</p>
+      <p>Kelas: {{ kelas }}</p>
+    </div>
+    <div class="footer-right text-right">
+      <p>Contact Us:</p>
+      <div class="social-links space-x-4">
+        <a href="#" class="hover:underline">Facebook</a>
+        <a href="#" class="hover:underline">Instagram</a>
+        <a href="#" class="hover:underline">Twitter</a>
+      </div>
+    </div>
+  </div>
+</footer>
 
 {% endblock content %}

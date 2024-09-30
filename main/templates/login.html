@@ -1,32 +1,50 @@
 {% extends 'base.html' %}
 
 {% block meta %}
-<title>Login</title>
+<title>Login | JerseyVault</title>
 {% endblock meta %}
 
 {% block content %}
-<div class="login">
-  <h1>Login</h1>
+<div class="flex h-screen w-full items-center justify-center bg-gray-900">
+  <div class="rounded-xl bg-gray-800 bg-opacity-50 px-16 py-10 shadow-lg backdrop-blur-md max-sm:px-8">
+    <div class="text-white">
+      <div class="mb-8 flex flex-col items-center">
+        <h1 class="mb-2 text-3xl font-bold">JerseyVault</h1>
+        <span class="text-gray-300">Enter Your Login Details</span>
+      </div>
+      
+      <form method="POST" action="">
+        {% csrf_token %}
+        <div class="mb-4 text-lg">
+          {{ form.username.errors }}
+          <input class="rounded-xl border-none bg-white bg-opacity-100 px-6 py-2 text-center text-blackx100 placeholder-slate-200 shadow-lg outline-none backdrop-blur-md" type="text" name="username" placeholder="Username" required />
+        </div>
 
-  <form method="POST" action="">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input class="btn login_btn" type="submit" value="Login" /></td>
-      </tr>
-    </table>
-  </form>
+        <div class="mb-4 text-lg">
+          {{ form.password.errors }}
+          <input class="rounded-xl border-none bg-white bg-opacity-100 px-6 py-2 text-center text-black placeholder-slate-200 shadow-lg outline-none backdrop-blur-md" type="password" name="password" placeholder="Password" required />
+        </div>
 
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %} Don't have an account yet?
-  <a href="{% url 'main:register' %}">Register Now</a>
+        <div class="mt-8 flex justify-center text-lg text-black">
+          <button type="submit" class="rounded-xl bg-yellow-400 bg-opacity-50 px-10 py-2 text-white shadow-xl backdrop-blur-md transition-colors duration-300 hover:bg-yellow-600">Login</button>
+        </div>
+      </form>
+
+      {% if messages %}
+      <div class="mt-4">
+        <ul class="text-red-500 text-sm">
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <div class="mt-4 text-center">
+        <p class="text-gray-300">Don't have an account yet?</p>
+        <a href="{% url 'main:register' %}" class="text-yellow-400 hover:underline">Register Now</a>
+      </div>
+    </div>
+  </div>
 </div>
-
 {% endblock content %}

@@ -2,10 +2,10 @@
 
 Sebuah proyek Django sederhana sebagai Tugas Mata Kuliah Pemrograman Berbasis Platform oleh Farrell Zidane Raihandrawan (2306275600)
 
-LINK PWS : https://farrell-zidane31-jerseyvault1.pbp.cs.ui.ac.id/
+LINK PWS : https://farrell-zidane31-jerseyvault.pbp.cs.ui.ac.id/
  
 
-## TUGAS 1
+## TUGAS 2
 ### 1. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
 
 1. membuat _repository_ bernama ```Jerseyvault```
@@ -177,11 +177,11 @@ Model pada Django disebut ORM (Object-Relational Mapping) karena memungkinkan pe
 Data delivery merupakan bagian yang penting karena menjadi penghubung/jembatan bagi aliran informasi antara hardware, device, dan user. Data delivery yang efisien memastikan bahwa informasi yang dibutuhkan selalu tersedia secara real-time
 
 ### 2. Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
-JSON lebih baik dibanding XML karena JSON memiliki 
-    - struktur yang lebih sederhana dibandingkan dengan XML karena menggunakan struktur berbasis objek dengan key-values. 
-    - JSON lebih mudah untuk diparsing langsung oleh browser
-    - Sebagian besar REST API modern menggunakan JSON sebagai format standar untuk pertukaran data
-    - JSON mendukung validasi data dengan format yang lebih fleksibel melalui JSON Schema. Ini lebih ringan dan lebih mudah dipahami oleh developer.
+JSON lebih baik dibanding XML karena JSON memiliki :
+- struktur yang lebih sederhana dibandingkan dengan XML karena menggunakan struktur berbasis objek dengan key-values. 
+- JSON lebih mudah untuk diparsing langsung oleh browser
+- Sebagian besar REST API modern menggunakan JSON sebagai format standar untuk pertukaran data
+- JSON mendukung validasi data dengan format yang lebih fleksibel melalui JSON Schema. Ini lebih ringan dan lebih mudah dipahami oleh developer.
 
 ### 3.  Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
  Fungsi `is_valid()` digunakan untuk
@@ -197,21 +197,21 @@ csrf_token diperlukan saat membuat form di Django untuk melindungi aplikasi dari
 ### 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
 
 1. Membuat folder ```templates``` pada root folder dan buat ```base.html``` dengan isi
-    ```html
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% block meta %} {% endblock meta %}
-  </head>
+```html
+    {% load static %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {% block meta %} {% endblock meta %}
+    </head>
 
-  <body>
-    {% block content %} {% endblock content %}
-  </body>
-</html>
-    ```
+    <body>
+        {% block content %} {% endblock content %}
+    </body>
+    </html>
+```
 
 2. membuka ```settings.py``` dan masukkan kode ini untuk mendeteksi berkas base.html sebagai berkas template
 
@@ -229,29 +229,29 @@ TEMPLATES = [
 ```
 3. Ubah kode ```main.html``` dengan menambahkan untuk untuk mewarisi template lain (`base.html`) dan mengganti isi blok `content` dengan konten spesifik halaman.:
 ```html
- {% extends 'base.html' %}
- {% block content %}
- ...
- {% endblock content %}
+    {% extends 'base.html' %}
+    {% block content %}
+    ...
+    {% endblock content %}
  ```
 
- 4. Menambahkan kode berikut pada ```models.py``` :
+4. Menambahkan kode berikut pada ```models.py``` :
  ```python
- import uuid
-from django.db import models
+    import uuid
+    from django.db import models
 
-class Product(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  # tambahkan baris ini
-    jersey_name = models.CharField(max_length=255)
-    time = models.DateField(auto_now_add=True)
-    description = models.TextField()
-    price = models.IntegerField()
-    quantity = models.IntegerField()
+    class Product(models.Model):
+        id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  # tambahkan baris ini
+        jersey_name = models.CharField(max_length=255)
+        time = models.DateField(auto_now_add=True)
+        description = models.TextField()
+        price = models.IntegerField()
+        quantity = models.IntegerField()
 
 
-    @property
-    def is_mood_strong(self):
-        return self.price > 5
+        @property
+        def is_mood_strong(self):
+            return self.price > 5
 ```
 
 dan lakukan migrasi model
@@ -262,13 +262,13 @@ dan lakukan migrasi model
 
 5. Membuat file ```forms.py``` untuk membuat struktur form yang dapat menerima data Jersey Baru dengan memasukkan kode berikut:
 ``` python
-from django.forms import ModelForm
-from main.models import Product
+    from django.forms import ModelForm
+    from main.models import Product
 
-class ProductEntryForm(ModelForm):
-    class Meta:
-        model = Product
-        fields = ["jersey_name", "description", "price", "quantity"]
+    class ProductEntryForm(ModelForm):
+        class Meta:
+            model = Product
+            fields = ["jersey_name", "description", "price", "quantity"]
 ```
 
 6. Menambahkan import dan fungsi baru pada file ```views.py```  untuk menghasilkan form yang dapat menambahkan data Jersey Entry secara otomatis ketika data di-submit dari form.
@@ -311,50 +311,50 @@ urlpatterns = [
 9. Buat berkas HTML baru dengan nama ```create_product_entry.html``` pada direktori main/templates dan isi dengan kode berikut.
 ```html
     {% extends 'base.html' %} 
-{% block content %}
-<h1>Add New Jersey</h1>
+    {% block content %}
+    <h1>Add New Jersey</h1>
 
-<form method="POST">
-  {% csrf_token %}
-  <table>
-    {{ form.as_table }}
-    <tr>
-      <td></td>
-      <td>
-        <input type="submit" value="Add Jersey Entry" />
-      </td>
-    </tr>
-  </table>
-</form>
+    <form method="POST">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+        <tr>
+        <td></td>
+        <td>
+            <input type="submit" value="Add Jersey Entry" />
+        </td>
+        </tr>
+    </table>
+    </form>
 
-{% endblock %}
+    {% endblock %}
 ```
 10. Tambahkan kode ini ke dalam ```main.html``` untuk menampilkan data jersey dalam bentuk tabel yang akan redirect ke halaman form.
 ```html
-...
-{% if not product_entries %}
-    <p>Belum ada data jersey pada JerseyVault.</p>
-{% else %}
-    <table>
-      <tr>
-        <th>Jersey name</th>
-        <th>Time</th>
-        <th>Description</th>
-        <th>Price</th>
-        <th>Quantity</th>
+    ...
+    {% if not product_entries %}
+        <p>Belum ada data jersey pada JerseyVault.</p>
+    {% else %}
+        <table>
+        <tr>
+            <th>Jersey name</th>
+            <th>Time</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Quantity</th>
 
-      </tr>
-      {% for product_entry in product_entries %}
-      <tr>
-        <td>{{product_entry.jersey_name}}</td>
-        <td>{{product_entry.time}}</td>
-        <td>{{product_entry.description}}</td>
-        <td>Rp.{{product_entry.price}}</td>
-        <td>{{product_entry.quantity}}</td>
-      </tr>
-      {% endfor %}
-    </table>
-{% endif %}
+        </tr>
+        {% for product_entry in product_entries %}
+        <tr>
+            <td>{{product_entry.jersey_name}}</td>
+            <td>{{product_entry.time}}</td>
+            <td>{{product_entry.description}}</td>
+            <td>Rp.{{product_entry.price}}</td>
+            <td>{{product_entry.quantity}}</td>
+        </tr>
+        {% endfor %}
+        </table>
+    {% endif %}
 ```
 Screenshot POSTMAN : https://docs.google.com/document/d/16JmIt-wZpMgFIVi2bI5hJfzVgQuXsNG7B0p_BoDDfcE/edit?usp=sharing
 
@@ -477,3 +477,89 @@ untuk mengatur mode produksi.
 
 10.**Routing URL**:
 - Atur routing URL untuk memastikan alur tampilan halaman berjalan dengan baik.
+
+## TUGAS 5
+### 1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+
+### 2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
+
+### 3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+#### Margin
+**Margin** adalah ruang di luar border elemen, yang digunakan untuk memberi jarak antara elemen dan elemen lain di sekitarnya.
+
+- **Cara Kerja**
+**Margin** tidak mempengaruhi ukuran konten atau elemen itu sendiri, tetapi mengatur jarak antara elemen tersebut dengan elemen lain.
+
+- **Properti** 
+    - ```margin-top```
+    - ```margin-right```
+    - ```margin-bottom```
+    - ```margin-left```
+    - ```margin``` (shorthand untuk semua sisi)
+
+- **Contoh Syntax** :
+```css
+    .box {
+    margin: 10px; /* Margin 10px di semua sisi */
+    }
+```
+#### Border
+**Border** adalah garis yang mengelilingi elemen di antara padding dan margin. Border menambah batas visual di sekitar elemen dan dapat dikustomisasi dengan berbagai gaya, ketebalan, dan warna.
+
+- **Cara Kerja** :
+Border dapat memiliki lebar, warna, dan gaya yang berbeda. Border mempengaruhi ukuran total elemen karena menambah lebar di luar padding.
+
+- **Properti**
+
+- **Contoh Syntax**
+```css
+    .box {
+        border: 2px solid #000; /* Border dengan ketebalan 2px, gaya solid, dan warna hitam */
+    }
+```
+#### Padding
+**Padding** adalah ruang antara konten elemen dan batas elemen (border). Padding menciptakan jarak di dalam elemen, sehingga konten elemen tidak menempel langsung pada tepi border.
+
+- **Cara Kerja** :
+**Padding** mempengaruhi ukuran elemen, menambah ruang di dalam elemen tersebut.
+
+- **Properti**:
+    - ```padding-top```
+    - ```padding-right```
+    - ```padding-bottom```
+    - ```padding-left```
+    - ```padding``` (shorthand untuk semua sisi)
+
+- **Contoh Syntax**
+```css
+    .box {
+        padding: 20px; /* Memberi padding 20px di semua sisi */
+    }
+```
+
+### 4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+Dalam CSS,  ada beberapa selector yang diterapkan pada elemen yang sama, **prioritas** atau **urutan spesifisitas** digunakan untuk menentukan *style* mana yang akan dipakai. Semakin tinggi urutan atau spesifisitas, semakin besar kemungkinannya untuk diterapkan pada elemen tersebut. Berikut adalah urutan prioritas selector CSS dari yang paling tinggi hingga paling rendah:
+
+#### 1. Inline Styles (Gaya yang Didefinisikan Langsung di Elemen)
+- Gaya ini diterapkan langsung pada elemen HTML melalui atribut style. Karena diterapkan langsung di elemen, gaya ini memiliki prioritas tertinggi.
+- **Contoh**: ```<div style="color: red;">Teks ini berwarna merah</div>```
+- **Prioritas**: Gaya inline akan mengabaikan semua gaya yang ditentukan oleh selektor ID, class, atau elemen.
+
+#### 2. ID Selectors (Selector Berdasarkan ID)
+- Selector yang menggunakan atribut ```id``` dari elemen HTML. Karena ```id``` harus unik untuk setiap elemen di halaman, selector ini memiliki prioritas yang tinggi.
+- **Contoh**: ```#judul { color: blue; }``` akan mempengaruhi elemen dengan ID judul.
+- **Prioritas**: ID memiliki prioritas lebih tinggi dibandingkan selector class dan elemen.
+
+#### 3. Class Selectors (Selector Berdasarkan Class)
+- Selector yang menggunakan atribut ```class``` dari elemen. Class dapat diterapkan ke beberapa elemen, sehingga memiliki prioritas di bawah ID.
+- **Contoh**: ```.konten { margin: 20px; }``` akan mempengaruhi semua elemen dengan class ```konten```.
+- **Prioritas**: Class memiliki prioritas lebih tinggi daripada selector elemen, tetapi lebih rendah dari ID.
+
+#### 4. Element Selectors (Selector Berdasarkan Elemen)
+- Selector yang hanya berdasarkan elemen HTML seperti ```div```, ```p```, atau ```h1```. Ini adalah selector dengan prioritas terendah.
+- **Contoh**: ```p { color: green; }``` akan mempengaruhi semua elemen paragraf (```<p>```).
+- **Prioritas**: Ini memiliki prioritas paling rendah dibandingkan selector ID dan class.
+
+
+### 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+

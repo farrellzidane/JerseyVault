@@ -1,5 +1,5 @@
 import datetime
-from django.shortcuts import render, redirect  
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -56,24 +56,6 @@ def show_main(request):
         'npm' : "2306275600",
         'kelas' : "PBP B",
 
-        'item_name1': 'Manchester United 98/99 UCL Final',
-        'item_description1' : '''This is Ole Gunnar Solksjaer's Match Worn
-                                jersey who scored the last minute game winner.''',
-        'price1' : '150.000.000',
-        'item_rating1' : '9/10',
-
-        'item_name2': 'Blackburn Rovers 94/95 ',
-        'item_description2' : '''This is Alan Shearer's Match Worn
-                                jersey who led the team wins the Premier League.''',
-        'price2' : '100.000.000',
-        'item_rating2' : '9/10',
-
-        'item_name3': 'France Home jersey WC 2006',
-        'item_description3' : '''This is Zinedine Zidane's Match Worn
-                                jersey when he did the iconic headbutt.''',
-        'price3' : '150.000.000',
-        'item_rating3' : '10/10',
-
         'product_entries': product_entries,
         'last_login': request.COOKIES['last_login'],
 
@@ -94,6 +76,28 @@ def create_product_entry(request):
 
     context = {'form': form}
     return render(request, "create_product_entry.html", context)
+
+def edit_product(request, id):
+    # Get product entry berdasarkan id
+    product = Product.objects.get(pk = id)
+
+    # Set product entry sebagai instance dari form
+    form = ProductEntryForm(request.POST or None, instance=product)
+
+    if form.is_valid() and request.method == "POST":
+        # Simpan form dan kembali ke halaman awal
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "edit_product.html", context)
+
+def delete_product(request, id):
+    # Get product entry berdasarkan id
+    product = Product.objects.get(pk = id)
+
+    product.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))
 
 def show_xml(request):
     data = Product.objects.all()
