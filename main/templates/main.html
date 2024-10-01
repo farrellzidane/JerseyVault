@@ -16,22 +16,26 @@
   </div>
 </section>
 
-<!-- Shop Section -->
-<section id="shop" class="py-12 px-6 text-blackx100 max-w-7xl mx-auto rounded-lg ">
+<!-- Horizontal Scroll Shop Section -->
+<section id="shop" class="bg-gray-100 py-12 px-6 max-w-7xl mx-auto rounded-lg shadow-lg">
+  <div class="border border-gray-300 bg-white rounded-lg p-6">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Our Collection</h2>
+
     {% if not product_entries %}
-        <p class="text-center">Belum ada data jersey pada JerseyVault.</p>
+      <p class="text-center text-gray-500">There's no jersey on JerseyVault.</p>
     {% else %}
-        <!-- Grid layout for displaying product cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {% for product in product_entries %}
-            <div>
-              <!-- Include card_product.html for each product -->
-              {% include 'card_product.html' with product=product %}
-            </div>
-          {% endfor %}
-        </div>
+      <!-- Horizontal Scrollable Section for Cards -->
+      <div class="flex space-x-6 overflow-x-auto pb-4" style="scrollbar-width: none;">
+        {% for product in product_entries %}      
+          <div class="min-w-[250px] flex-shrink-0">
+            <!-- Include card_product.html for each product -->
+            {% include 'card_product.html' with product=product %}
+          </div>
+        {% endfor %}
+      </div>
     {% endif %}
-  </section>
+  </div>
+</section>
 
 <!-- Add New Jersey Button -->
 <div class="text-center my-8">
@@ -42,9 +46,9 @@
 <footer class="bg-gray-900 py-10 text-white mt-12">
   <div class="flex justify-between max-w-7xl mx-auto px-4">
     <div class="footer-left">
-      <p>Nama: {{ nama }}</p>
-      <p>NPM: {{ npm }}</p>
-      <p>Kelas: {{ kelas }}</p>
+      <p>Name  : {{ nama }}</p>
+      <p>NPM   : {{ npm }}</p>
+      <p>Class : {{ kelas }}</p>
     </div>
     <div class="footer-right text-right">
       <p>Contact Us:</p>

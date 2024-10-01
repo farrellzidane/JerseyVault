@@ -481,7 +481,39 @@ untuk mengatur mode produksi.
 ## TUGAS 5
 ### 1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
 
+Dalam CSS, ketika ada beberapa selector yang diterapkan pada elemen yang sama, prioritas atau urutan spesifisitas digunakan untuk menentukan gaya mana yang akan dipakai. Semakin tinggi urutan atau spesifisitas, semakin besar kemungkinannya untuk diterapkan pada elemen tersebut. Berikut adalah urutan prioritas selector CSS dari yang paling tinggi hingga paling rendah:
+
+#### 1. Inline Styles (Gaya yang Didefinisikan Langsung di Elemen)
+*Style* ini diterapkan langsung pada elemen HTML melalui atribut *style*. Karena diterapkan langsung di *element*, gaya ini memiliki prioritas tertinggi.
+- **Contoh** : ```<div style="color: red;">Teks ini berwarna merah</div>```
+- **Prioritas** : *Inline Style* akan mengabaikan semua *style* yang ditentukan oleh ```ID Selector```, ```class```, atau ```elemen```.
+
+#### 2. ID Selectors (Selector Berdasarkan ID)
+Selector yang menggunakan atribut id dari elemen HTML. Karena id harus unik untuk setiap *element* di halaman, selector ini memiliki prioritas yang tinggi.
+- **Contoh** : ```#judul { color: blue; }``` akan mempengaruhi *element* dengan ID judul.
+- **Prioritas** : ID memiliki prioritas lebih tinggi dibandingkan selector class dan elemen.
+
+#### 3. Class Selectors (Selector Berdasarkan Class)
+Selector yang menggunakan atribut class dari elemen. Class dapat diterapkan ke beberapa elemen, sehingga memiliki prioritas di bawah ID.
+- **Contoh**: ```.konten { margin: 20px; }``` akan mempengaruhi semua *element* dengan class konten.
+- **Prioritas**: Class memiliki prioritas lebih tinggi daripada selector elemen, tetapi lebih rendah dari ID.
+
+#### 4. Element Selectors (Selector Berdasarkan Elemen)
+Selector yang hanya berdasarkan elemen HTML seperti div, p, atau h1. Ini adalah selector dengan prioritas terendah.
+- **Contoh**: ```p { color: green; }``` akan mempengaruhi semua *element* paragraf ```(<p>)```.
+- **Prioritas:** Ini memiliki prioritas paling rendah dibandingkan selector ID dan class.
+
 ### 2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
+**Responsive design** penting dalam pengembangan aplikasi web karena memungkinkan web atau aplikasi menyesuaikan tata letaknya secara otomatis agar **tampilan optimal** di berbagai perangkat dengan ukuran layar yang berbeda, seperti desktop, tablet, dan smartphone. 
+
+#### Contoh Aplikasi yang Sudah Menerapkan Responsive Design:
+- **Twitter**:
+Twitter menggunakan desain responsif yang sangat baik. Baik di desktop maupun *mobile*, tata letak aplikasi tetap nyaman untuk diakses, dengan penyesuaian yang mulus berdasarkan ukuran layar. Teks, gambar, dan elemen interaktif semua berubah sesuai dengan perangkat yang digunakan pengguna.
+
+#### Contoh Aplikasi yang Belum Menerapkan Responsive Design:
+- **Situs Web Lama**:
+Banyak situs web lama atau yang tidak di-update sering kali masih menggunakan layout statis yang tidak menyesuaikan dengan perangkat pengguna. Pengguna mungkin harus melakukan zoom atau scroll secara horizontal, terutama di layar yang lebih kecil.
+- **Contoh**: Beberapa situs institusi pemerintah atau situs lama dari universitas yang belum dioptimalkan untuk perangkat seluler cenderung memiliki layout yang tidak responsif.
 
 ### 3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
 #### Margin
@@ -563,3 +595,65 @@ Dalam CSS,  ada beberapa selector yang diterapkan pada elemen yang sama, **prior
 
 ### 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
 
+#### Kustomisasi halaman login, register, dan tambah product semenarik mungkin. ###
+- implementasi styling menggunakan tailwind css , dengan tipe inline css dan internal css
+    1. Menambahkan kode berikut pada base.html untuk menyambungkan template django dengan taiwind
+    ```html
+    <head>
+    {% block meta %}
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% endblock meta %}
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    </head>
+    ```
+2. menambahkan warna, font, dan ukuran yang sesuai pada tiap page
+3. menambahkan animasi dan transisi untuk membuat tampilan lebih menarik
+4. menyesuaikan layout dan posisi elemen agar terlihat rapi dan mudah dibaca
+
+ - **Contoh** : pada bagian ```card_product.html``` untuk menampilkan produk yang ada sebagai berikut :
+
+ ```html
+ <div class="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-2xl transition duration-300 ">
+    
+    <!-- Product Info Section -->
+    <div class="px-4 pb-4">
+        <!-- Edit and Delete Buttons -->
+        <div class="flex justify-end mt-3 mb-3 space-x-2">
+            <a href="{% url 'main:edit_product' product.pk %}" class="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center">
+                Edit
+            </a>
+            <a href="{% url 'main:delete_product' product.pk %}" class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center">
+                Delete
+            </a>
+        </div>
+        <!-- Product Image Section -->
+        <a href="#">
+            {% if product.image_url %}
+                <!-- Display the product image from the URL -->
+                <img class="p-6 rounded-t-lg" src="{{ product.image_url }}" alt="{{ product.jersey_name }}" />
+            {% else %}
+                <!-- Fallback image if no image_url is provided -->
+                <img class="p-6 rounded-t-lg" src="/static/images/placeholder.png" alt="Placeholder image" />
+            {% endif %}
+        </a>
+
+        <a href="#">
+            <h5 class="text-lg font-semibold tracking-tight text-gray-900">{{ product.jersey_name }}</h5>
+        </a>
+
+        <!-- Product Description Section -->
+        <div class="mt-2.5 mb-4">
+            <p class="text-gray-700 text-sm">{{ product.description }}</p>
+        </div>
+
+        <!-- Price and Button Section -->
+        <div class="flex items-center justify-between">
+            <span class="text-2xl font-bold text-gray-900">Rp {{ product.price }}</span>
+            <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">Add to cart</a>
+        </div>
+    </div>
+</div>
+
+ ```

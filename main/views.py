@@ -34,6 +34,8 @@ def login_user(request):
         response = HttpResponseRedirect(reverse("main:show_main"))
         response.set_cookie('last_login', str(datetime.datetime.now()))
         return response
+      else:
+        messages.error(request,"Invalid Username/Password")
 
    else:
       form = AuthenticationForm(request)
@@ -95,7 +97,6 @@ def edit_product(request, id):
 def delete_product(request, id):
     # Get product entry berdasarkan id
     product = Product.objects.get(pk = id)
-
     product.delete()
     return HttpResponseRedirect(reverse('main:show_main'))
 

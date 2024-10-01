@@ -1,30 +1,40 @@
-<div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-2xl transition duration-300 dark:bg-gray-800 dark:border-gray-700">
+<div class="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-2xl transition duration-300 ">
+    
     <!-- Product Info Section -->
-    <div class="px-5 pb-5">
+    <div class="px-4 pb-4">
         <!-- Edit and Delete Buttons -->
-        <div class="flex justify-end mt-4 mb-4 space-x-2">
-            <a href="{% url 'main:edit_product' product.pk %}" class="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-yellow-400 dark:hover:bg-yellow-500 dark:focus:ring-yellow-600">
+        <div class="flex justify-end mt-3 mb-3 space-x-2">
+            <a href="{% url 'main:edit_product' product.pk %}" class="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center">
                 Edit
             </a>
-            <a href="{% url 'main:delete_product' product.pk %}" class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-red-400 dark:hover:bg-red-500 dark:focus:ring-red-600">
+            <a href="{% url 'main:delete_product' product.pk %}" class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center">
                 Delete
             </a>
         </div>
+        <!-- Product Image Section -->
+        <a href="#">
+            {% if product.image_url %}
+                <!-- Display the product image from the URL -->
+                <img class="p-6 rounded-t-lg" src="{{ product.image_url }}" alt="{{ product.jersey_name }}" />
+            {% else %}
+                <!-- Fallback image if no image_url is provided -->
+                <img class="p-6 rounded-t-lg" src="/static/images/placeholder.png" alt="Placeholder image" />
+            {% endif %}
+        </a>
 
         <a href="#">
-            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ product.jersey_name }}</h5>
+            <h5 class="text-lg font-semibold tracking-tight text-gray-900">{{ product.jersey_name }}</h5>
         </a>
 
         <!-- Product Description Section -->
-        <div class="mt-2.5 mb-5">
-            <p class="text-gray-700 dark:text-gray-300 text-sm">{{ product.description }}</p>
+        <div class="mt-2.5 mb-4">
+            <p class="text-gray-700 text-sm">{{ product.description }}</p>
         </div>
 
         <!-- Price and Button Section -->
         <div class="flex items-center justify-between">
-            <span class="text-3xl font-bold text-gray-900 dark:text-white">Rp {{ product.price }}</span>
-            <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add to cart</a>
+            <span class="text-2xl font-bold text-gray-900">Rp {{ product.price }}</span>
+            <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">Add to cart</a>
         </div>
-
     </div>
 </div>
