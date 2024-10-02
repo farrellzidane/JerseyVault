@@ -570,28 +570,33 @@ Border dapat memiliki lebar, warna, dan gaya yang berbeda. Border mempengaruhi u
 ```
 
 ### 4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!
-Dalam CSS,  ada beberapa selector yang diterapkan pada elemen yang sama, **prioritas** atau **urutan spesifisitas** digunakan untuk menentukan *style* mana yang akan dipakai. Semakin tinggi urutan atau spesifisitas, semakin besar kemungkinannya untuk diterapkan pada elemen tersebut. Berikut adalah urutan prioritas selector CSS dari yang paling tinggi hingga paling rendah:
 
-#### 1. Inline Styles (Gaya yang Didefinisikan Langsung di Elemen)
-- Gaya ini diterapkan langsung pada elemen HTML melalui atribut style. Karena diterapkan langsung di elemen, gaya ini memiliki prioritas tertinggi.
-- **Contoh**: ```<div style="color: red;">Teks ini berwarna merah</div>```
-- **Prioritas**: Gaya inline akan mengabaikan semua gaya yang ditentukan oleh selektor ID, class, atau elemen.
+#### Flex Box
+**Flex Box** adalah *method layout* yang bertujuan untuk memberikan kontrol yang lebih baik terhadap *alignment* di dalam container, terutama ketika ukuran *element* anak tidak diketahui atau dinamis. Flexbox bekerja dalam satu dimensi, baik secara horizontal (baris) atau vertikal (kolom).
 
-#### 2. ID Selectors (Selector Berdasarkan ID)
-- Selector yang menggunakan atribut ```id``` dari elemen HTML. Karena ```id``` harus unik untuk setiap elemen di halaman, selector ini memiliki prioritas yang tinggi.
-- **Contoh**: ```#judul { color: blue; }``` akan mempengaruhi elemen dengan ID judul.
-- **Prioritas**: ID memiliki prioritas lebih tinggi dibandingkan selector class dan elemen.
+- **Kegunaan**: Mengatur alignment dan space antar elemen dalam satu arah.
+- **Properti Utama**: `flex-direction`, `justify-content`, `align-items`, `flex-grow`, `flex-shrink`.
+- **Cocok untuk**: Navbar, tombol, atau elemen baris/kolom fleksibel.
 
-#### 3. Class Selectors (Selector Berdasarkan Class)
-- Selector yang menggunakan atribut ```class``` dari elemen. Class dapat diterapkan ke beberapa elemen, sehingga memiliki prioritas di bawah ID.
-- **Contoh**: ```.konten { margin: 20px; }``` akan mempengaruhi semua elemen dengan class ```konten```.
-- **Prioritas**: Class memiliki prioritas lebih tinggi daripada selector elemen, tetapi lebih rendah dari ID.
+**Contoh** :
+```css
+.flex-container { display: flex; justify-content: space-between; }
+```
 
-#### 4. Element Selectors (Selector Berdasarkan Elemen)
-- Selector yang hanya berdasarkan elemen HTML seperti ```div```, ```p```, atau ```h1```. Ini adalah selector dengan prioritas terendah.
-- **Contoh**: ```p { color: green; }``` akan mempengaruhi semua elemen paragraf (```<p>```).
-- **Prioritas**: Ini memiliki prioritas paling rendah dibandingkan selector ID dan class.
+#### Grid Layout
+**Grid layout** adalah *method layout* dengan tata letak dua dimensi, yang memungkinkan kontrol penuh untuk mendefinisikan baris dan kolom. Berbeda dengan flexbox yang berfokus pada satu dimensi (baris atau kolom), grid bekerja pada **dua dimensi (baris dan kolom)** secara bersamaan.
 
+- **Kegunaan**: Mengatur tata letak yang kompleks dengan baris dan kolom.
+- **Properti Utama**: `grid-template-columns`, `grid-template-rows`, `grid-gap`, `grid-area`.
+- **Cocok untuk**: Layout halaman penuh, galeri, dashboard.
+
+**Contoh** :
+```css
+.grid-container { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+```
+#### Perbandingan Flexbox vs Grid Layout:
+- **Flexbox** lebih cocok untuk tata letak satu dimensi (baris atau kolom) di mana elemen-elemen secara fleksibel diatur dalam satu arah.
+- **Grid Layout** lebih cocok untuk tata letak dua dimensi di mana kita ingin mengatur elemen di baris dan kolom sekaligus, dengan kontrol yang lebih kompleks.
 
 ### 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
 
