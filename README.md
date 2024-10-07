@@ -662,3 +662,240 @@ Border dapat memiliki lebar, warna, dan gaya yang berbeda. Border mempengaruhi u
 </div>
 
  ```
+
+## TUGAS 6
+### 1. Jelaskan manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web!
+**JavaScript** adalah bahasa pemrograman yang memungkinkan kita untuk membuat konten, mengontrol multimedia, animasi gambar, dan elemen dinamis lainnya di web.
+Beberapa manfaat JavaScript dalam pengembangan aplikasi web meliputi:
+- **Kemampuan untuk melakukan permintaan HTTP secara asinkron (AJAX)**: Ini memungkinkan aplikasi web untuk mengambil atau mengirim data di latar belakang tanpa harus memuat ulang seluruh halaman, meningkatkan interaktivitas aplikasi bagi pengguna.
+- **User Interface yang interaktif**: Dengan adanya framework seperti React, Vue, dan Angular, JavaScript memungkinkan pengembang membuat antarmuka yang dinamis dan menarik bagi pengguna.
+- **Dukungan luas pada browser**: JavaScript telah menjadi standar di hampir semua browser modern, membuatnya menjadi pilihan populer untuk mengembangkan fitur aplikasi web yang dapat diakses di berbagai platform.
+-** Manipulasi DOM (Document Object Model)**: JavaScript dapat mengubah elemen pada halaman web secara real-time berdasarkan interaksi pengguna, memberikan pengalaman yang lebih responsif.
+- **Full Stack Development**: JavaScript dapat digunakan di sisi front-end maupun back-end, misalnya dengan Node.js. Ini memudahkan proses pengembangan dan penyebaran aplikasi karena satu bahasa dapat digunakan di kedua sisi.
+Secara keseluruhan, **JavaScript** menjadi komponen penting dalam pengembangan aplikasi web modern. Bahasa ini membantu menghadirkan fungsionalitas yang lebih kompleks, seperti yang digunakan di search engine, e-commerce, dan platform media sosial.
+
+### 2. Jelaskan fungsi dari penggunaan await ketika kita menggunakan fetch()! Apa yang akan terjadi jika kita tidak menggunakan await?
+Dalam JavaScript, fungsi `fetch()` digunakan untuk melakukan permintaan HTTP (seperti GET, POST) ke server dan mengembalikan promise yang merepresentasikan proses asinkron dari permintaan tersebut. Penggunaan `await` dalam konteks `fetch()` berfungsi untuk menunggu hingga promise dari `fetch()` selesai diproses, sehingga hasilnya dapat digunakan seperti data sinkron.
+
+#### Fungsi Penggunaan `await` dengan `fetch()`:
+1. **Menunggu Penyelesaian Promise**: `await` digunakan untuk membuat eksekusi kode "menunggu" sampai permintaan `fetch()` selesai dan promise dikembalikan. Artinya, JavaScript akan menunggu respons dari server sebelum melanjutkan ke baris kode berikutnya.
+
+2. **Mengubah Promise Menjadi Hasil Nilai** : Ketika menggunakan `await` pada `fetch()`, JavaScript mengekstrak nilai yang dihasilkan oleh promise tersebut, yang biasanya berupa respons dari server (seperti data JSON atau status HTTP). Ini membuat kode lebih mudah dibaca dan lebih mirip dengan alur sinkron.
+
+### 3. Mengapa kita perlu menggunakan decorator csrf_exempt pada view yang akan digunakan untuk AJAX POST?
+`@csrf_exempt` digunakan untuk menonaktifkan perlindungan **Cross-Site Request Forgery (CSRF)** pada view tertentu. Ini akan membuat Django tidak memeriksa keberadaan `csrf_token` pada **POST request** yang dikirimkan ke view tersebut, seperti pada fungsi `create_product_entry_ajax`. Biasanya, `@csrf_exempt` digunakan jika view memproses data dari layanan eksternal yang tidak memiliki akses ke token CSRF, sehingga POST request dapat dilakukan tanpa validasi CSRF. Penggunaan `@csrf_exempt` juga diperlukan saat menerima **AJAX POST request** yang tidak menyertakan token CSRF, karena tanpa itu, Django akan menolak permintaan dengan **error 403**.
+
+### 4. Pada tutorial PBP minggu ini, pembersihan data input pengguna dilakukan di belakang (backend) juga. Mengapa hal tersebut tidak dilakukan di frontend saja?
+Pembersihan data input harus tetap dilakukan di sisi backend demi menjaga keamanan data. Pengguna dapat menonaktifkan JavaScript atau memodifikasi validasi yang dilakukan di frontend, sehingga validasi di sisi klien saja tidak cukup. Oleh karena itu, perlu dilakukan pembersihan di sisi backend (server) untuk memastikan data yang diterima aman dan tidak mengandung serangan seperti `XSS (Cross-Site Scripting)`.
+
+### 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+#### Pengimplementasian AJAX dan Javascript
+1. Membuat Fungsi untuk Menambahkan produk dengan AJAX dengan menambahkan potongan kode berikut pada `views.py`
+```python
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+...
+@csrf_exempt
+@require_POST
+def create_product_entry_ajax(request):
+    jersey_name = strip_tags(request.POST.get("jersey_name"))
+    description = strip_tags(request.POST.get("description"))
+    price = request.POST.get("price")
+    quantity = request.POST.get("quantity")
+    image_url = request.POST.get("image_url")
+    user = request.user
+
+    new_jersey = Product(
+        jersey_name=jersey_name, description=description,
+        price=price, quantity=quantity, image_url=image_url,
+        user=user
+    )
+    new_jersey.save()
+
+    return HttpResponse(b"CREATED", status=201)
+```
+
+2. Menambahkan Routing Untuk Fungsi `create_product_entry_ajax` pada `urls.py` dengan potongan kode berikut :
+```python
+from main.views import ..., create_product_entry_ajax
+...
+urlpatterns = [
+    ...
+    path('create_product_entry_ajax/', create_product_entry_ajax, name='create_product_entry_ajax'),
+]
+```
+3. Menampilkan Data product Entry dengan `fetch()` API dengan memodifikasi `views.py` dan `main.html` :
+- `views.py`
+```python
+    data = Product.objects.filter(user=request.user)
+    # ubah pada baris pertama sho_json dan show_xml
+```
+- `main.html`
+```html
+<script>
+  const modal = document.getElementById('crudModal');
+  const modalContent = document.getElementById('crudModalContent');
+  
+  document.getElementById("cancelButton").addEventListener("click", hideModal);
+  document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+  
+  async function getProductEntries(){
+      return fetch("{% url 'main:show_json' %}").then((res) => res.json())
+  }
+
+  function addProductEntry() {
+    fetch("{% url 'main:create_product_entry_ajax' %}", {
+      method: "POST",
+      body: new FormData(document.querySelector('#ProductEntryForm')),
+    })
+    .then(response => refreshProductEntries())
+
+    document.getElementById("ProductEntryForm").reset(); 
+    document.querySelector("[data-modal-toggle='crudModal']").click();
+
+    return false;
+  }
+
+  function showModal() {
+      modal.classList.remove('hidden'); 
+      setTimeout(() => {
+        modalContent.classList.remove('opacity-0', 'scale-95');
+        modalContent.classList.add('opacity-100', 'scale-100');
+      }, 50); 
+  }
+
+  function hideModal() {
+      modalContent.classList.remove('opacity-100', 'scale-100');
+      modalContent.classList.add('opacity-0', 'scale-95');
+
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 150); 
+  }
+
+  async function refreshProductEntries() {
+    document.getElementById("product_entry_cards").innerHTML = "";
+    const productEntries = await getProductEntries();
+    let htmlString = "";
+
+    if (productEntries.length === 0) {
+      htmlString = `
+          <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+              <p class="text-center text-gray-600 mt-4">Belum ada jersey pada JerseyVault.</p>
+          </div>`;
+    } else {
+      productEntries.forEach((item) => {
+        htmlString += `
+          <div class="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
+            <div class="px-4 pb-4">
+              <div class="flex justify-end mt-3 mb-3 space-x-2">
+                <a href="/edit-product/${item.pk}" class="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center">Edit</a>
+                <a href="/delete/${item.pk}" class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center">Delete</a>
+              </div>
+              <a href="#">
+                ${item.fields.image_url ? `<img class="p-6 rounded-t-lg" src="${DOMPurify.sanitize(item.fields.image_url)}" alt="${DOMPurify.sanitize(item.fields.jersey_name)}" />` : `<img class="p-6 rounded-t-lg" src="/static/images/placeholder.png" alt="Placeholder image" />`}
+              </a>
+              <a href="#"><h5 class="text-lg font-semibold tracking-tight text-gray-900">${DOMPurify.sanitize(item.fields.jersey_name)}</h5></a>
+              <div class="mt-2.5 mb-4"><p class="text-gray-700 text-sm">${DOMPurify.sanitize(item.fields.description)}</p></div>
+              <!-- Quantity Section -->
+              <div class="mb-2">
+                <p class="text-gray-500 text-sm">Available Quantity: <span class="font-bold">${DOMPurify.sanitize(item.fields.quantity)}</span></p>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-2xl font-bold text-gray-900">Rp ${DOMPurify.sanitize(item.fields.price)}</span>
+                <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">Add to cart</a>
+              </div>
+            </div>
+          </div>`;
+      });
+    }
+
+    document.getElementById("product_entry_cards").innerHTML = htmlString;
+  }
+
+  refreshProductEntries();
+  document.getElementById("ProductEntryForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      addProductEntry();
+  });
+</script>
+```
+
+4. Melindungi Aplikasi dari **Cross Site Scripting (XSS)** dengan menambahkan `strip_tags` untuk membersihkan data baru pada `views.py`,`forms.py`
+- `views.py`
+```python
+from django.utils.html import strip_tags
+...
+
+@csrf_exempt
+@require_POST
+def create_product_entry_ajax(request):
+    jersey_name = strip_tags(request.POST.get("jersey_name"))
+    description = strip_tags(request.POST.get("description"))
+...
+```
+- `forms.py`
+```python
+from django.utils.html import strip_tags
+...
+class ProductEntryForm(forms.ModelForm):
+    class Meta:
+        ...
+    def clean_jersey_name(self):
+        jersey_name = self.cleaned_data.get("jersey_name")
+        # Check if the field is empty
+        if not jersey_name:
+            raise ValidationError("This field cannot be blank.")
+        # Strip HTML tags for XSS protection
+        return strip_tags(jersey_name)
+
+    def clean_description(self):
+        description = self.cleaned_data.get("description")
+        # Check if the field is empty
+        if not description:
+            raise ValidationError("This field cannot be blank.")
+        # Strip HTML tags for XSS protection
+        return strip_tags(description)
+
+    def clean_price(self):
+        price = self.cleaned_data.get("price")
+        if price is None:
+            raise ValidationError("This field cannot be blank.")
+        return price
+
+    def clean_quantity(self):
+        quantity = self.cleaned_data.get("quantity")
+        if quantity is None:
+            raise ValidationError("This field cannot be blank.")
+        return quantity
+
+    def clean_image_url(self):
+        image_url = self.cleaned_data.get("image_url")
+        if not image_url:
+            raise ValidationError("This field cannot be blank.")
+        return strip_tags(image_url)
+```
+
+5. Melakukan pembersihan data dengan DOMPurify dengan memodifikasi kode pada `main.html`
+```html
+{% block meta %}
+...
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+...
+{% endblock meta %}
+```
+```javascript
+...
+    async function refreshProductEntries() {
+        ...
+        moodEntries.forEach((item) => {
+            const jersey_name = DOMPurify.sanitize(item.fields.jersey_name);
+            const description = DOMPurify.sanitize(item.fields.description);
+            const price = DOMPurify.sanitize(item.fields.price);
+            const quantity = DOMPurify.sanitize(item.fields.quantity);
+            const image_url = DOMPurify.sanitize(item.fields.image_url);
+    });
+        ...
+    }
+    ...
+```

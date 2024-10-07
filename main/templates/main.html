@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block meta %}
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+<title>JerseyVault</title>
+{% endblock meta %}
+
 {% block content %}
 <!-- Padding top to prevent content from being hidden under the navbar -->
 <div class="pt-16"></div>
@@ -21,26 +26,83 @@
   <div class="border border-gray-300 bg-white rounded-lg p-6">
     <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Our Collection</h2>
 
-    {% if not product_entries %}
-      <p class="text-center text-gray-500">There's no jersey on JerseyVault.</p>
-    {% else %}
-      <!-- Horizontal Scrollable Section for Cards -->
-      <div class="flex space-x-6 overflow-x-auto pb-4" style="scrollbar-width: none;">
-        {% for product in product_entries %}      
-          <div class="min-w-[250px] flex-shrink-0">
-            <!-- Include card_product.html for each product -->
-            {% include 'card_product.html' with product=product %}
-          </div>
-        {% endfor %}
+    <!-- Horizontal Scroll Container -->
+    <div id="horizontal-scroll-container" class="flex space-x-6 overflow-x-auto scroll-smooth">
+      <div id="product_entry_cards" class="flex space-x-6"></div>
+    </div>
+  </div>
+</section>
+
+      <!-- Modal Section for Adding a Product -->
+    <div id="crudModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
+      <div id="crudModalContent" class="relative bg-white rounded-lg shadow-lg w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-4 sm:mx-0 transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
+        
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-4 border-b rounded-t">
+          <h3 class="text-xl font-semibold text-gray-900">Add New Product Entry</h3>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" id="closeModalBtn">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="px-6 py-4 space-y-6">
+          <!-- Form Section -->
+          <form id="ProductEntryForm" method="POST" action="{% url 'main:create_product_entry' %}">
+            {% csrf_token %}
+            <!-- Product Name -->
+            <div class="mb-4">
+              <label for="jersey_name" class="block text-sm font-medium text-gray-700">Jersey Name</label>
+              <input type="text" id="jersey_name" name="jersey_name" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter jersey name" required>
+            </div>
+
+            <!-- Product Description -->
+            <div class="mb-4">
+              <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+              <textarea id="description" name="description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter jersey description" required></textarea>
+            </div>
+
+            <!-- Product Price -->
+            <div class="mb-4">
+              <label for="price" class="block text-sm font-medium text-gray-700">Price (Rp)</label>
+              <input type="number" id="price" name="price" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter price" required>
+            </div>
+
+            <!-- Product Quantity -->
+            <div class="mb-4">
+              <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
+              <input type="number" id="quantity" name="quantity" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter quantity" required>
+            </div>
+
+            <!-- Product Image URL -->
+            <div class="mb-4">
+              <label for="image_url" class="block text-sm font-medium text-gray-700">Image URL</label>
+              <input type="url" id="image_url" name="image_url" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter image URL">
+            </div>
+          </form>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2 p-6 border-t border-gray-200 rounded-b justify-center md:justify-end">
+          <button type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg" id="cancelButton">Cancel</button>
+          <button type="submit" id="submitProductEntry" form="ProductEntryForm" class="bg-indigo-700 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg">Save</button>
+        </div>
       </div>
-    {% endif %}
+    </div>
   </div>
 </section>
 
 <!-- Add New Jersey Button -->
 <div class="text-center my-8">
-  <a href="{% url 'main:create_product_entry' %}" class="bg-yellow-400 text-white py-2 px-6 rounded-lg transition duration-300 hover:bg-yellow-600">Add New Jersey</a>
+  <a href="{% url 'main:create_product_entry' %}" class="bg-yellow-500 text-white py-2 px-6 rounded-lg transition duration-300 hover:bg-yellow-600">Add New Jersey</a>
+  <button onclick="showModal();" class="bg-yellow-500 text-white py-2 px-6 rounded-lg transition duration-300 hover:bg-yellow-600">
+    Add New Jersey Entry by AJAX
+  </button>
 </div>
+
 
 <!-- Footer Section -->
 <footer class="bg-gray-900 py-10 text-white mt-12">
@@ -60,5 +122,107 @@
     </div>
   </div>
 </footer>
+
+
+
+
+
+
+<script>
+  const modal = document.getElementById('crudModal');
+  const modalContent = document.getElementById('crudModalContent');
+  
+  document.getElementById("cancelButton").addEventListener("click", hideModal);
+  document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+  
+  async function getProductEntries(){
+      return fetch("{% url 'main:show_json' %}").then((res) => res.json())
+  }
+
+  function addProductEntry() {
+    fetch("{% url 'main:create_product_entry_ajax' %}", {
+      method: "POST",
+      body: new FormData(document.querySelector('#ProductEntryForm')),
+    })
+    .then(response => refreshProductEntries())
+
+    document.getElementById("ProductEntryForm").reset(); 
+    document.querySelector("[data-modal-toggle='crudModal']").click();
+
+    return false;
+  }
+
+  function showModal() {
+      modal.classList.remove('hidden'); 
+      setTimeout(() => {
+        modalContent.classList.remove('opacity-0', 'scale-95');
+        modalContent.classList.add('opacity-100', 'scale-100');
+      }, 50); 
+  }
+
+  function hideModal() {
+      modalContent.classList.remove('opacity-100', 'scale-100');
+      modalContent.classList.add('opacity-0', 'scale-95');
+
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 150); 
+  }
+
+  async function refreshProductEntries() {
+    document.getElementById("product_entry_cards").innerHTML = "";
+    const productEntries = await getProductEntries();
+    let htmlString = "";
+
+    if (productEntries.length === 0) {
+      htmlString = `
+        <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+            <p class="text-center text-gray-600 mt-4">Belum ada jersey pada JerseyVault.</p>
+        </div>`;
+    } else {
+      productEntries.forEach((item) => {
+        // Ambil dan sanitasi data dari entri
+        const jersey_name = DOMPurify.sanitize(item.fields.jersey_name);
+        const description = DOMPurify.sanitize(item.fields.description);
+        const price = DOMPurify.sanitize(item.fields.price);
+        const quantity = DOMPurify.sanitize(item.fields.quantity);
+        const image_url = DOMPurify.sanitize(item.fields.image_url);
+
+        // Bangun HTML untuk setiap entri produk
+        htmlString += `
+          <div class="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
+            <div class="px-4 pb-4">
+              <div class="flex justify-end mt-3 mb-3 space-x-2">
+                <a href="/edit-product/${item.pk}" class="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center">Edit</a>
+                <a href="/delete/${item.pk}" class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center">Delete</a>
+              </div>
+              <a href="#">
+                ${image_url ? `<img class="p-6 rounded-t-lg" src="${image_url}" alt="${jersey_name}" />` : `<img class="p-6 rounded-t-lg" src="/static/images/placeholder.png" alt="Placeholder image" />`}
+              </a>
+              <a href="#"><h5 class="text-lg font-semibold tracking-tight text-gray-900">${jersey_name}</h5></a>
+              <div class="mt-2.5 mb-4"><p class="text-gray-700 text-sm">${description}</p></div>
+              <!-- Quantity Section -->
+              <div class="mb-2">
+                <p class="text-gray-500 text-sm">Available Quantity: <span class="font-bold">${quantity}</span></p>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-2xl font-bold text-gray-900">Rp ${price}</span>
+                <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">Add to cart</a>
+              </div>
+            </div>
+          </div>`;
+      });
+    }
+
+    document.getElementById("product_entry_cards").innerHTML = htmlString;
+  }
+
+  refreshProductEntries();
+
+  document.getElementById("ProductEntryForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      addProductEntry();
+  });
+</script>
 
 {% endblock content %}

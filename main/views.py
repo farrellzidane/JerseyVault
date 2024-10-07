@@ -1,14 +1,17 @@
 import datetime
-from django.shortcuts import render, redirect, reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.utils.html import strip_tags
+from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
-from main.forms import ProductEntryForm
-from main.models import Product
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.urls import reverse
+from main.models import Product
+from main.forms import ProductEntryForm
 
 # Create your views here.
 
@@ -25,22 +28,22 @@ def register(request):
     return render(request, 'register.html', context)
 
 def login_user(request):
-   if request.method == 'POST':
-      form = AuthenticationForm(data=request.POST)
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
 
-      if form.is_valid():
-        user = form.get_user()
-        login(request, user)
-        response = HttpResponseRedirect(reverse("main:show_main"))
-        response.set_cookie('last_login', str(datetime.datetime.now()))
-        return response
-      else:
-        messages.error(request,"Invalid Username/Password")
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            response = HttpResponseRedirect(reverse("main:show_main"))
+            response.set_cookie('last_login', str(datetime.datetime.now()))
+            return response
+        else:
+            messages.error(request, "Invalid username or password. Please try again.")
 
-   else:
-      form = AuthenticationForm(request)
-   context = {'form': form}
-   return render(request, 'login.html', context)
+    else:
+        form = AuthenticationForm(request)
+    context = {'form': form}
+    return render(request, 'login.html', context)
 
 def logout_user(request):
     logout(request)
@@ -48,24 +51,37 @@ def logout_user(request):
     response.delete_cookie('last_login')
     return response
 
-@login_required(login_url='/login')
 
+@login_required(login_url='/login')
 def show_main(request):
-    product_entries = Product.objects.filter(user=request.user)
     context = {
         'name' : request.user.username,
         'nama' : "Farrell Zidane Raihandrawan",
         'npm' : "2306275600",
         'kelas' : "PBP B",
-
-        'product_entries': product_entries,
         'last_login': request.COOKIES['last_login'],
-
-
     }
 
     return render(request, "main.html", context)
 
+@csrf_exempt
+@require_POST
+def create_product_entry_ajax(request):
+    jersey_name = strip_tags(request.POST.get("jersey_name"))
+    description = strip_tags(request.POST.get("description"))
+    price = request.POST.get("price")
+    quantity = request.POST.get("quantity")
+    image_url = request.POST.get("image_url")
+    user = request.user
+
+    new_jersey = Product(
+        jersey_name=jersey_name, description=description,
+        price=price, quantity=quantity, image_url=image_url,
+        user=user
+    )
+    new_jersey.save()
+
+    return HttpResponse(b"CREATED", status=201)
 
 def create_product_entry(request):
     form = ProductEntryForm(request.POST or None)
@@ -101,7 +117,7 @@ def delete_product(request, id):
     return HttpResponseRedirect(reverse('main:show_main'))
 
 def show_xml(request):
-    data = Product.objects.all()
+    data = Product.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_xml_by_id(request, id):
@@ -109,11 +125,10 @@ def show_xml_by_id(request, id):
     return HttpResponse(serializers.serialize("xml", data_id), content_type="application/xml")
 
 def show_json(request):
-    data = Product.objects.all()
+    data = Product.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_json_by_id(request, id):
     data_id = Product.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("json", data_id), content_type="application/json")
-
 

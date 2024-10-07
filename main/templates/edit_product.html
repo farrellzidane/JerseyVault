@@ -21,11 +21,16 @@
         {% csrf_token %}
 
         <!-- Display form fields with full width and clear input visibility -->
-        <div class="space-y-4 text-sm">
-          <div class="w-full">
-            <label for="jersey_name" class="block text-gray-300">Jersey Name</label>
-            <input type="text" id="jersey_name" name="jersey_name" class="w-full px-4 py-2 bg-gray-200 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-white" value="{{ form.jersey_name.value }}" placeholder="Enter Jersey Name">
-          </div>
+        <div class="mb-4">
+          <label for="jersey_name" class="block text-sm font-medium text-gray-300">Jersey Name</label>
+          <input type="text" id="jersey_name" name="jersey_name" class="mt-1 block text-gray-900 w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter jersey name" required>
+          <!-- Display form errors here -->
+          {% if form.jersey_name.errors %}
+            <div class="text-red-500">
+              {{ form.jersey_name.errors }}
+            </div>
+          {% endif %}
+        </div>
 
           <div class="w-full">
             <label for="description" class="block text-gray-300">Description</label>
