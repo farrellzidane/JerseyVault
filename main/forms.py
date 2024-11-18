@@ -6,7 +6,7 @@ from main.models import Product
 class ProductEntryForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['jersey_name', 'description', 'price', 'quantity', 'image_url']
+        fields = ['jersey_name', 'description', 'price', 'quantity']
     
     def clean_jersey_name(self):
         jersey_name = self.cleaned_data.get("jersey_name")
@@ -35,9 +35,3 @@ class ProductEntryForm(forms.ModelForm):
         if quantity is None:
             raise ValidationError("This field cannot be blank.")
         return quantity
-
-    def clean_image_url(self):
-        image_url = self.cleaned_data.get("image_url")
-        if not image_url:
-            raise ValidationError("This field cannot be blank.")
-        return strip_tags(image_url)

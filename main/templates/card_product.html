@@ -11,16 +11,6 @@
                 Delete
             </a>
         </div>
-        <!-- Product Image Section -->
-        <a href="#">
-            {% if product.image_url %}
-                <!-- Display the product image from the URL -->
-                <img class="p-6 rounded-t-lg" src="{{ product.image_url }}" alt="{{ product.jersey_name }}" />
-            {% else %}
-                <!-- Fallback image if no image_url is provided -->
-                <img class="p-6 rounded-t-lg" src="/static/images/placeholder.png" alt="Placeholder image" />
-            {% endif %}
-        </a>
 
         <a href="#">
             <h5 class="text-lg font-semibold tracking-tight text-gray-900">{{ product.jersey_name }}</h5>

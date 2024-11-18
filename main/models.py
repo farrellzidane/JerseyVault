@@ -10,8 +10,3 @@ class Product(models.Model):
     description = models.TextField()
     price = models.IntegerField()
     quantity = models.IntegerField()
-    image_url = models.URLField(max_length=500, blank=True, null=True)  # URL untuk gambar
-
-    @property
-    def is_mood_strong(self):
-        return self.price > 5

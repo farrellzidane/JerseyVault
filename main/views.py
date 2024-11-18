@@ -83,6 +83,29 @@ def create_product_entry_ajax(request):
 
     return HttpResponse(b"CREATED", status=201)
 
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.http import JsonResponse
+
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        new_jersey = Product.objects.create(user=request.user,
+            jersey_name=data["jersey_name"],
+            description=data["description"],
+            price=int(data["price"]),
+            quantity=int(data["quantity"])
+        )
+
+        new_jersey.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+
+
 def create_product_entry(request):
     form = ProductEntryForm(request.POST or None)
 

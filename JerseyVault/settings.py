@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-d2yy1a+dd$e2p3--zi*8u#=n9+18@(3$f7sp9_8)83w&trt45i
 PRODUCTION = os.getenv("PRODUCTION", False)
 DEBUG = not PRODUCTION
 #
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "farrell-zidane31-jerseyvault.pbp.cs.ui.ac.id", "http://farrell.zidane31-jerseyvault.pbp.cs.ui.ac.id" ]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "10.0.2.2", "farrell-zidane31-jerseyvault.pbp.cs.ui.ac.id", "http://farrell.zidane31-jerseyvault.pbp.cs.ui.ac.id" ]
 
 # Application definition
 
@@ -39,8 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main'
+    'main',
+    'authentication'
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
 
 MIDDLEWARE = [ 
     'django.middleware.security.SecurityMiddleware',
@@ -50,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'JerseyVault.urls'
